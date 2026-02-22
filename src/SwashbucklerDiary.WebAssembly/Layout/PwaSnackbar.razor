@@ -1,0 +1,18 @@
+@using Masa.Blazor;
+@inject IJSRuntime JSRuntime
+@inject I18n I18n
+
+<PSnackbar Class="m-snackbar--pwa"
+           Content="@I18n.T("New content is available. Click Refresh to update.")"
+           Value="false"
+           Vertical
+           Closeable
+           Top="Top"
+           Right="Rigtht"
+           Bottom="Bottom"
+           Rounded="@("lg")"
+           Timeout="-1"
+           ActionText="@I18n.T("Refresh")"
+           OnClose="Ignore"
+           OnAction="OnRefresh">
+</PSnackbar>

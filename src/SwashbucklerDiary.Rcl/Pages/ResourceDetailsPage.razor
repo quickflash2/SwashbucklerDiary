@@ -1,0 +1,17 @@
+@page "/resourceDetails"
+@inherits DiariesPageComponentBase
+
+<MyAppBar Title="@I18n.T("Used situation")"
+          OnClick="NavigateToBack">
+</MyAppBar>
+
+<ScrollContainer Id="@scrollContainerId">
+    <DiaryCardList @bind-Value="Diaries"
+                   @bind-Tags="Tags" />
+</ScrollContainer>
+
+<div class="right-bottom-float-area">
+    <BackTopButton Class="mb-2"
+                   Selector="@scrollContainerSelector">
+    </BackTopButton>
+</div>

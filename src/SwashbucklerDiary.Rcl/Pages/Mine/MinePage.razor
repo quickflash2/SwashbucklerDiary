@@ -1,0 +1,220 @@
+@page "/mine"
+@namespace SwashbucklerDiary.Rcl.Pages
+@inherits ImportantComponentBase
+
+<MyAppBar>
+    <MToolbarTitle Class="font-weight-bold flex-grow-1">
+        <wc-auto-scroll-text>@(I18n.T("Mine"))</wc-auto-scroll-text>
+    </MToolbarTitle>
+    <MultiSizeSearch OnSearch="Search"></MultiSizeSearch>
+</MyAppBar>
+
+<ScrollContainer @ref="scrollContainer">
+    <div class="mine-user-info mb-5">
+        <MCard Class="d-flex align-center elevation-sm-2--active"
+               Elevation="0"
+               Rounded="@("lg")"
+               Ripple="false"
+               OnClick="@(() => To("user"))">
+            <MList Style="width:100%;">
+                <MListItem ThreeLine>
+                    <MListItemAvatar Class="ml-sm-2 ml-md-4 mr-md-6"
+                                     Rounded="@("lg")"
+                                     Size="70">
+                        <img class="user-avatar" src="@(avatarResourceInfo?.DisPlayedUrl)" @onclick="() => showPreviewImage = true" @onclick:stopPropagation="true" />
+                    </MListItemAvatar>
+                    <MListItemContent>
+                        <MListItemTitle Class="text-h6 font-weight-bold">
+                            <wc-auto-scroll-text>
+                                @(userName ?? I18n.T("Swashbuckler Diary"))
+                            </wc-auto-scroll-text>
+                        </MListItemTitle>
+                        <MListItemSubtitle>
+                            @(sign ?? I18n.T("After the incident, brush off your clothes and hide deep in your name"))
+                        </MListItemSubtitle>
+                    </MListItemContent>
+                    <MListItemAction Style="align-self:unset;">
+                        <MIcon>chevron_right</MIcon>
+                    </MListItemAction>
+                </MListItem>
+            </MList>
+        </MCard>
+
+        <MCard Elevation="0"
+               Rounded="@("lg")">
+            <MList>
+                <MListItem>
+                    <MListItemContent Class="text-center"
+                                      Style="display: grid;grid-template-columns: repeat(3, 1fr);gap: 10px;">
+                        <div>
+                            <MListItemSubtitle>
+                                <wc-auto-scroll-text class="justify-center">@(I18n.T("Diary count"))</wc-auto-scroll-text>
+                            </MListItemSubtitle>
+                            <MListItemTitle Class="mt-2 font-weight-bold text-h6">
+                                <wc-auto-scroll-text class="justify-center">@diaryCount</wc-auto-scroll-text>
+                            </MListItemTitle>
+                        </div>
+                        <div>
+                            <MListItemSubtitle>
+                                <wc-auto-scroll-text class="justify-center">@(I18n.T("Word count"))</wc-auto-scroll-text>
+                            </MListItemSubtitle>
+                            <MListItemTitle Class="mt-2 font-weight-bold text-h6">
+                                <wc-auto-scroll-text class="justify-center">@wordCount</wc-auto-scroll-text>
+                            </MListItemTitle>
+                        </div>
+                        <div>
+                            <MListItemSubtitle>
+                                 <wc-auto-scroll-text class="justify-center">@(I18n.T("Active days"))</wc-auto-scroll-text>
+                            </MListItemSubtitle>
+                            <MListItemTitle Class="mt-2 font-weight-bold text-h6">
+                                <wc-auto-scroll-text class="justify-center">@activeDayCount</wc-auto-scroll-text>
+                            </MListItemTitle>
+                        </div>
+                    </MListItemContent>
+                </MListItem>
+                <MListItem>
+                    <MListItemContent Class="text-center"
+                                      Style="display: grid;grid-template-columns: repeat(3, 1fr);gap: 10px;">
+                        <div>
+                            <MListItemSubtitle>
+                                 <wc-auto-scroll-text class="justify-center">@(I18n.T("Image count"))</wc-auto-scroll-text>
+                            </MListItemSubtitle>
+                            <MListItemTitle Class="mt-2 font-weight-bold text-h6">
+                                <wc-auto-scroll-text class="justify-center">@imageCount</wc-auto-scroll-text>
+                            </MListItemTitle>
+                        </div>
+                        <div>
+                            <MListItemSubtitle>
+                                 <wc-auto-scroll-text class="justify-center">@(I18n.T("Audio count"))</wc-auto-scroll-text>
+                            </MListItemSubtitle>
+                            <MListItemTitle Class="mt-2 font-weight-bold text-h6">
+                                <wc-auto-scroll-text class="justify-center">@audioCount</wc-auto-scroll-text>
+                            </MListItemTitle>
+                        </div>
+                        <div>
+                            <MListItemSubtitle>
+                                 <wc-auto-scroll-text class="justify-center">@(I18n.T("Video count"))</wc-auto-scroll-text>
+                            </MListItemSubtitle>
+                            <MListItemTitle Class="mt-2 font-weight-bold text-h6">
+                                <wc-auto-scroll-text class="justify-center">@videoCount</wc-auto-scroll-text>
+                            </MListItemTitle>
+                        </div>
+                    </MListItemContent>
+                </MListItem>
+            </MList>
+        </MCard>
+    </div>
+
+    <MultiSizeDisplay>
+        <DesktopContent>
+            @foreach (var list in ViewLists)
+            {
+                <div class="text-h6 setting-title">
+                    @(I18n.T(list.Key))
+                </div>
+
+                <MCard @key="list"
+                       Class="mb-5"
+                       Elevation="0"
+                       Rounded="@("lg")">
+                    <MList Class="py-0">
+                        @foreach (var item in list.Value)
+                        {
+                            @if (item.Show)
+                            {
+                                <MListItem @key="item"
+                                           OnClick="item.OnClick">
+                                    <MListItemIcon>
+                                        <MIcon>
+                                            @(item.Icon)
+                                        </MIcon>
+                                    </MListItemIcon>
+                                    <MListItemContent>
+                                        @(I18n.T(item.Text))
+                                    </MListItemContent>
+                                    <MListItemAction>
+                                        <MIcon>chevron_right</MIcon>
+                                    </MListItemAction>
+                                </MListItem>
+
+                                <MDivider Class="mx-5"></MDivider>
+                            }
+                        }
+
+                    </MList>
+                </MCard>
+            }
+        </DesktopContent>
+        <MobileContent>
+            <div style="display: grid;grid-template-columns: repeat(2, 1fr);gap: 14px;">
+                @foreach (var list in ViewLists)
+                {
+                    @foreach (var item in list.Value)
+                    {
+                        @if (item.Show)
+                        {
+                            <MCard @key="item"
+                                   Elevation="0"
+                                   Rounded="@("lg")">
+                                <MList Class="py-0">
+                                    <MListItem OnClick="item.OnClick">
+                                        <MListItemIcon>
+                                            <MIcon>
+                                                @(item.Icon)
+                                            </MIcon>
+                                        </MListItemIcon>
+                                        <MListItemContent>
+                                            <wc-auto-scroll-text>@(I18n.T(item.Text))</wc-auto-scroll-text>
+                                        </MListItemContent>
+                                    </MListItem>
+                                </MList>
+                            </MCard>
+                        }
+                    }
+                }
+            </div>
+        </MobileContent>
+    </MultiSizeDisplay>
+
+</ScrollContainer>
+
+<RadioDialog @bind-Value="language"
+             @bind-Visible="showLanguage"
+             Title="@(I18n.T("Choose language"))"
+             OnChange="LanguageChanged"
+             TItem="System.Globalization.CultureInfo"
+             TItemValue="string"
+             Items="I18n.SupportedCultures.OrderByDescending(it => it.Name)"
+             ItemText="c => c.GetLanguageName()"
+             ItemValue="c => c.Name">
+</RadioDialog>
+
+<RadioDialog @bind-Value="theme"
+             @bind-Visible="showTheme"
+             Title="@(I18n.T("Night mode"))"
+             OnChange="ThemeChanged"
+             TItem="KeyValuePair<string, Shared.Theme>"
+             TItemValue="Shared.Theme"
+             Items="themeItems">
+</RadioDialog>
+
+<MultiSizeListDialog @bind-Visible="showFeedback"
+                 Title="@(I18n.T("Contact information"))"
+                 DynamicListItems="FeedbackTypes">
+</MultiSizeListDialog>
+
+<PreviewImageDialog @bind-Visible="showPreviewImage"
+                    Src="@avatarResourceInfo?.Url">
+</PreviewImageDialog>
+
+@if (!hidePrivacyModeEntrance || privacyMode)
+{
+    <InputDialog @bind-Visible="showprivacyModeEntrancePasswordDialog"
+                 Title="@(I18n.T("Verify password"))"
+                 Placeholder="@(I18n.T("Please enter password"))"
+                 MaxLength="20"
+                 Password="true"
+                 OnOK="InputPassword"
+                 OKText="@(I18n.T("OK"))">
+    </InputDialog>
+}

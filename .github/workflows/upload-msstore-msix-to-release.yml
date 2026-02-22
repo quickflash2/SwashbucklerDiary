@@ -1,0 +1,28 @@
+﻿name: Upload MSStore MSIX to release
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch: 
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+        type: string
+
+env:
+    APP_NAME: 'SwashbucklerDiary'
+    STORE_ID: '9P6PBVBF466L'
+
+jobs:
+  upload-store-msix-to-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Upload MSStore MSIX to release
+      uses: JasonWei512/Upload-Microsoft-Store-MSIX-Package-to-GitHub-Release@v1
+      with:
+        store-id: ${{ env.STORE_ID }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        asset-name-pattern: ${{ env.APP_NAME }}-${{ inputs.version }}-windows-x64

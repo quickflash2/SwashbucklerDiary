@@ -1,0 +1,143 @@
+@namespace SwashbucklerDiary.Rcl.Components
+
+@if (imagePaths != null && imagePaths.Count > 0)
+{
+    <div class="image-collage">
+        @switch (imagePaths.Count)
+        {
+            case 1:
+                <div class="image-collage__item image-collage__item--single">
+                    <img src="@imagePaths[0]" alt="Diary image" class="image-collage__img" loading="lazy" />
+                </div>
+                break;
+            case 2:
+                <div class="image-collage__row">
+                    <div class="image-collage__item image-collage__item--double">
+                        <img src="@imagePaths[0]" alt="Diary image" class="image-collage__img" loading="lazy" />
+                    </div>
+                    <div class="image-collage__item image-collage__item--double">
+                        <img src="@imagePaths[1]" alt="Diary image" class="image-collage__img" loading="lazy" />
+                    </div>
+                </div>
+                break;
+            case 3:
+                <div class="image-collage__row">
+                    <div class="image-collage__item image-collage__item--triple-left">
+                        <img src="@imagePaths[0]" alt="Diary image" class="image-collage__img" loading="lazy" />
+                    </div>
+                    <div class="image-collage__column">
+                        <div class="image-collage__item image-collage__item--triple-right">
+                            <img src="@imagePaths[1]" alt="Diary image" class="image-collage__img" loading="lazy" />
+                        </div>
+                        <div class="image-collage__item image-collage__item--triple-right">
+                            <img src="@imagePaths[2]" alt="Diary image" class="image-collage__img" loading="lazy" />
+                        </div>
+                    </div>
+                </div>
+                break;
+            default:
+                <div class="image-collage__row">
+                    <div class="image-collage__item image-collage__item--quad">
+                        <img src="@imagePaths[0]" alt="Diary image" class="image-collage__img" loading="lazy" />
+                    </div>
+                    <div class="image-collage__item image-collage__item--quad">
+                        <img src="@imagePaths[1]" alt="Diary image" class="image-collage__img" loading="lazy" />
+                    </div>
+                </div>
+                <div class="image-collage__row">
+                    <div class="image-collage__item image-collage__item--quad">
+                        <img src="@imagePaths[2]" alt="Diary image" class="image-collage__img" loading="lazy" />
+                    </div>
+                    <div class="image-collage__item image-collage__item--quad image-collage__item--with-count">
+                        <img src="@imagePaths[3]" alt="Diary image" class="image-collage__img" loading="lazy" />
+                        @if (imagePaths.Count > 4)
+                        {
+                            <div class="image-collage__count">+@(imagePaths.Count - 4)</div>
+                        }
+                    </div>
+                </div>
+                break;
+        }
+    </div>
+}
+
+<style>
+    .image-collage {
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 8px 0;
+    }
+
+    .image-collage__row {
+        display: flex;
+        gap: 4px;
+    }
+
+    .image-collage__row + .image-collage__row {
+        margin-top: 4px;
+    }
+
+    .image-collage__column {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+    }
+
+    .image-collage__item {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .image-collage__item--single {
+        width: 100%;
+        aspect-ratio: 16/9;
+    }
+
+    .image-collage__item--double {
+        flex: 1;
+        aspect-ratio: 1/1;
+    }
+
+    .image-collage__item--triple-left {
+        flex: 1;
+        aspect-ratio: 1/1;
+    }
+
+    .image-collage__item--triple-right {
+        flex: 1;
+        aspect-ratio: 1/1;
+    }
+
+    .image-collage__item--quad {
+        flex: 1;
+        aspect-ratio: 1/1;
+    }
+
+    .image-collage__item--with-count {
+        position: relative;
+    }
+
+    .image-collage__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .image-collage__count {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+</style>

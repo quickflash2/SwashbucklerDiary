@@ -1,0 +1,71 @@
+@page "/searchAppFeatures"
+@inherits ImportantComponentBase
+
+<MyAppBar>
+    <MButton Icon
+             OnClick="NavigateToBack">
+        <MIcon>arrow_back</MIcon>
+    </MButton>
+
+    <TransparentTextField @bind-Value="search"
+                          Placeholder="@(I18n.T("Please enter the function you want to search for"))"
+                          OnInput="UpdateAppFeatures">
+    </TransparentTextField>
+</MyAppBar>
+
+<ScrollContainer>
+    @if (ShowPrivacyModeItem)
+    {
+        <MCard Class="mb-3"
+               Elevation="0"
+               Rounded="@("lg")"
+               OnClick="ToPrivacyMode">
+            <MList Class="py-0">
+                <MListItem>
+                    <MListItemIcon>
+                        <MIcon>
+                            mdi:mdi-hexagon-slice-3
+                        </MIcon>
+                    </MListItemIcon>
+                    <MListItemContent>
+                        <MListItemTitle>
+                            <wc-auto-scroll-text>@(I18n.T("Privacy mode"))</wc-auto-scroll-text>
+                        </MListItemTitle>
+                    </MListItemContent>
+                </MListItem>
+            </MList>
+        </MCard>
+    }
+
+    <Virtualize Items="_appFeatures"
+                ItemSize="@ItemHeight"
+                Context="item"
+                OverscanCount="30">
+        <MCard @key="item"
+               Class="mb-3"
+               Elevation="0"
+               Rounded="@("lg")"
+               Href="@(item.Href)">
+            <MList Class="py-0">
+                <MListItem>
+                    <MListItemIcon>
+                        <MIcon>
+                            @item.Icon
+                        </MIcon>
+                    </MListItemIcon>
+                    <MListItemContent>
+                        <MListItemTitle Class="mb-2">
+                            <wc-auto-scroll-text>@(I18n.T(item.Name))</wc-auto-scroll-text>
+                        </MListItemTitle>
+                        <MListItemSubtitle Class="text-caption-xs-only">
+                            <wc-auto-scroll-text>@I18n.TForAppFeaturePath(item.Path)</wc-auto-scroll-text>
+                        </MListItemSubtitle>
+                    </MListItemContent>
+                </MListItem>
+            </MList>
+        </MCard>
+    </Virtualize>
+
+    <EmptyResult Show="_appFeatures.Count == 0 && !ShowPrivacyModeItem"></EmptyResult>
+
+</ScrollContainer>

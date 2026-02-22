@@ -1,0 +1,19 @@
+@page "/tagDetails/{id:guid}"
+@inherits DiariesPageComponentBase
+
+<MyAppBar Title="@tagName"
+          OnClick="NavigateToBack">
+</MyAppBar>
+
+<ScrollContainer Id="@scrollContainerId">
+    <DiaryCardList @bind-Value="Diaries"
+                   @bind-Tags="Tags" />
+</ScrollContainer>
+
+<div class="right-bottom-float-area">
+    <BackTopButton Selector="@scrollContainerSelector">
+    </BackTopButton>
+    <MyFloatButton Icon="mdi:mdi-pencil"
+                   OnClick="ToWrite">
+    </MyFloatButton>
+</div>

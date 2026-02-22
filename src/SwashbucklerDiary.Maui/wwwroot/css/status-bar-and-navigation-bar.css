@@ -1,0 +1,122 @@
+body {
+    padding-top: var(--sait);
+    padding-bottom: var(--saib);
+    padding-left: var(--sail);
+    padding-right: var(--sair);
+    --sait: var(--safe-area-inset-top, env(safe-area-inset-top));
+    --saib: var(--safe-area-inset-bottom, env(safe-area-inset-bottom));
+    --sail: var(--safe-area-inset-left, env(safe-area-inset-left));
+    --sair: var(--safe-area-inset-right, env(safe-area-inset-right));
+    --safe-area-height: calc(100vh - var(--sait) - var(--saib));
+}
+
+.m-application__wrap {
+    min-height: var(--safe-area-height);
+}
+
+.m-item-group.m-bottom-navigation {
+    margin-bottom: var(--saib);
+}
+
+    .m-item-group.m-bottom-navigation::after {
+        content: '';
+        display: block;
+        height: var(--saib);
+        width: 100%;
+        bottom: calc(0px - var(--saib));
+        position: absolute;
+        background-color: rgba(var(--m-theme-surface));
+    }
+
+.m-bottom-navigation-hidden {
+    transform: translateY(calc(100% + var(--saib))) !important;
+}
+
+.m-navigation-drawer {
+    left: var(--sail);
+    padding-top: var(--sait);
+    padding-bottom: var(--saib);
+    height: 100vh !important;
+}
+
+.m-navigation-drawer--right {
+    left: auto;
+    right: var(--sair);
+}
+
+.m-bottom-sheet.m-dialog .m-card::after {
+    content: '';
+    display: block;
+    height: var(--saib);
+}
+
+.m-bottom-sheet.m-dialog.p-mobile-date-picker__content {
+    padding-bottom: var(--saib);
+}
+
+.m-enqueued-snackbars.m-enqueued-snackbars--top::before {
+    content: '';
+    display: block;
+    height: var(--sait);
+}
+
+.m-enqueued-snackbars.m-enqueued-snackbars--bottom::after {
+    content: '';
+    display: block;
+    height: var(--saib);
+}
+
+.m-snack:not(.m-enqueued-snackbar, .m-snack--absolute) {
+    height: var(--safe-area-height);
+    top: var(--sait);
+    bottom: var(--saib);
+}
+
+.m-dialog.m-dialog--active.m-dialog--fullscreen {
+    padding-top: var(--sait) !important;
+    padding-left: var(--sail) !important;
+    padding-right: var(--sair) !important;
+}
+
+.vditor--fullscreen {
+    height: calc(var(--safe-area-height) - var(--vditor-toolbar-height)) !important;
+    top: var(--sait);
+    left: var(--sail);
+    right: var(--sair);
+}
+
+.card-list__assist-info {
+    height: calc(var(--safe-area-height) - 64px - 24px);
+}
+
+.md-preview__outline {
+    height: calc(var(--safe-area-height) - 64px);
+}
+
+.m-menu__content {
+    transform: translateX(calc(0px - var(--sail) - var(--sair)));
+}
+
+.right-bottom-float-area {
+    bottom: calc(1rem + var(--saib));
+    right: calc(1rem + var(--sair));
+}
+
+.fullscreen-height {
+    height: var(--safe-area-height) !important;
+}
+
+@media screen and (max-width: 600px) {
+    .right-bottom-float-area {
+        bottom: calc(1rem + 56px + var(--saib)) !important;
+        /* margin-bottom: 8px !important; */
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .vditor-toolbar {
+        bottom: var(--saib);
+        left: var(--sail);
+        right: var(--sair);
+    }
+}

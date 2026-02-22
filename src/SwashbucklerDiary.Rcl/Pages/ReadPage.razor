@@ -1,0 +1,216 @@
+@page "/read/{id:guid}"
+@inherits ImportantComponentBase
+
+@if (ShowAppBar)
+{
+    <MyAppBar>
+        <MButton Icon="true"
+                 OnClick="NavigateToBack">
+            <MIcon>
+                arrow_back
+            </MIcon>
+        </MButton>
+
+        <MSpacer></MSpacer>
+        <MButton Icon="true"
+                 OnClick="()=>showShare=true">
+            <MIcon>
+                share
+            </MIcon>
+        </MButton>
+        <MButton Icon="true"
+                 OnClick="OpenDeleteDialog">
+            <MIcon>
+                mdi:mdi-delete-outline
+            </MIcon>
+        </MButton>
+        <MButton Icon="true"
+                 OnClick="ToWrite">
+            <MIcon>
+                mdi:mdi-pencil
+            </MIcon>
+        </MButton>
+
+        <MultiSizeMenu @bind-Visible="showMenu"
+                       DynamicListItems="menuItems">
+            <ActivatorContent>
+                <MButton @attributes="@context.Attrs"
+                         Icon="true">
+                    <MultiSizeDisplay>
+                        <DesktopContent>
+                            <MIcon>more_horiz</MIcon>
+                        </DesktopContent>
+                        <MobileContent>
+                            <MIcon>more_vert</MIcon>
+                        </MobileContent>
+                    </MultiSizeDisplay>
+                </MButton>
+            </ActivatorContent>
+        </MultiSizeMenu>
+    </MyAppBar>
+}
+
+<HighlightSearch @bind-Visible="showHighlightSearch"
+                          @bind-Value="@search"
+                          Selector="@($".{highlightSearchContainerClass}")"
+                          Autofocus="highlightSearchAutofocus">
+</HighlightSearch>
+
+<ScrollContainer Id="@scrollContainerId"
+                 ContentClass="py-0">
+    <div class="@BodyWrapClass">
+        <div @ref="outlineElement"
+             class="@OutlineClass">
+        </div>
+
+        <div class="@($"{screenshotClass} pb-6 screenshot")">
+            <div class="d-flex align-center px-3 flex-wrap">
+                @if (diaryTimeFormat?.Contains("yyyy/MM/dd") ?? false)
+                {
+                    <span class="text-h6 font-weight-bold mr-3">
+                        @(diary.CreateTime.ToString("yyyy/MM/dd"))
+                    </span>
+                }
+
+                @if (diaryTimeFormat?.Contains("HH:mm") ?? false)
+                {
+                    <span class="font-weight-bold mr-5">
+                        @(diary.CreateTime.ToString("HH:mm"))
+                    </span>
+                }
+
+                @if (diaryTimeFormat?.Contains("dddd") ?? false)
+                {
+                    <span class="text-subtitle-2">
+                        @(I18n.ToWeek(diary.CreateTime))
+                    </span>
+                }
+
+                <MSpacer></MSpacer>
+
+                <span class="text-subtitle-2">
+                    @(CounterValue())
+                </span>
+            </div>
+
+            <div>
+                @if (ShowWeather)
+                {
+                    <DiaryInfoButton Icon="@WeatherIcon"
+                                     Text="@WeatherText">
+                    </DiaryInfoButton>
+                }
+
+                @if (ShowMood)
+                {
+                    <DiaryInfoButton Icon="@MoodIcon"
+                                     Text="@MoodText">
+                    </DiaryInfoButton>
+                }
+
+                @if (ShowLocation)
+                {
+                    <DiaryInfoButton Icon="location_on"
+                                     Text="@LocationText">
+                    </DiaryInfoButton>
+                }
+            </div>
+
+            @if (ShowTitle)
+            {
+                <MTextField Value="@(diary.Title)"
+                            TValue="string"
+                            Class="pb-0 my-sm-4 user-select font-weight-bold"
+                            Solo="true"
+                            Flat="true"
+                            BackgroundColor="transparent"
+                            HideDetails="@("auto")"
+                            Dense="true"
+                            Readonly="true"
+                            maxlength="20">
+                </MTextField>
+            }
+
+            <div class="user-select">
+                @if (enableMarkdown)
+                {
+                    <MarkdownPreview @ref="markdownPreview"
+                                     @bind-MobileOutline="showMoblieOutline"
+                                     Value="@(diary.Content)"
+                                     Class="@($"px-3 {highlightSearchContainerClass}")"
+                                     Style="padding-top:10px"
+                                     FirstLineIndent="firstLineIndent"
+                                     TaskListLineThrough="taskListLineThrough"
+                                     Outline="outline"
+                                     OutlineElement="outlineElement"
+                                     RightOutline="rightOutline"
+                                     OnAfter="HandleFirstQuery"
+                                     OnDblClick="ToWrite">
+                    </MarkdownPreview>
+                }
+                else
+                {
+                    <div @ondblclick="ToWrite"
+                         class="@($"text-preview {highlightSearchContainerClass}")">
+                        @(diary.Content)
+                    </div>
+                }
+            </div>
+
+            @if (Tags.Count > 0)
+            {
+                <div class="pl-2 pb-3">
+                    <MChipGroup Column="true">
+                        @foreach (var item in Tags)
+                        {
+                            <MChip @key="item.Id"
+                                   IsActive="false"
+                                   Href="@($"tagDetails/{item.Id}")">
+                                @(item.Name)
+                            </MChip>
+                        }
+                    </MChipGroup>
+                </div>
+            }
+        </div>
+    </div>
+</ScrollContainer>
+
+<div class="right-bottom-float-area">
+    <BackTopButton Selector="@scrollContainerSelector">
+    </BackTopButton>
+
+    <MyFloatButton Icon="format_list_bulleted"
+                   Show="!BreakpointService.Breakpoint.MdAndUp && enableMarkdown && outline"
+                   OnClick="()=>showMoblieOutline=true">
+    </MyFloatButton>
+</div>
+
+<MultiSizeListDialog @bind-Visible="showShare"
+                     Title="@(I18n.T("Choose how to Share"))"
+                     DynamicListItems="shareItems">
+</MultiSizeListDialog>
+
+<DeleteDialog @bind-Visible="showDelete"
+              Title="@(I18n.T("Delete a diary"))"
+              Content="@(I18n.T("Please delete carefully, every diary is a precious memory.Once deleted, it cannot be restored."))"
+              OnOK="HandleDelete">
+</DeleteDialog>
+
+<ExportDialog @bind-Visible="showExport"
+              Value="exportDiaries">
+</ExportDialog>
+
+@code {
+    string? BodyWrapClass => new CssBuilder()
+        .Add("d-flex")
+        .Add("flex-row-reverse", rightOutline)
+        .ToString();
+
+    string OutlineClass => new CssBuilder()
+        .Add("vditor-outline")
+        .Add("vditor-outline--right", rightOutline)
+        .Add("vditor-outline_hide", !outline)
+        .Add("md-preview__outline")
+        .ToString();
+}

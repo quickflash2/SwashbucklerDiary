@@ -1,0 +1,11 @@
+@namespace SwashbucklerDiary.Rcl.Components
+@inherits MyComponentBase
+
+<div @ref="Ref" class="swiper">
+    <div class="swiper-wrapper">
+        <CascadingValue Value="this"
+                        IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+    </div>
+</div>
